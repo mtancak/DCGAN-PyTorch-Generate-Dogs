@@ -1,3 +1,6 @@
+# ignore model imported from previous project
+RN/
+
 # IDEA stuff
 .idea/
 

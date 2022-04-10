@@ -3,7 +3,7 @@ import torch.nn as nn
 from enum import Enum
 
 
-class GAN_MODE(Enum):
+class GANMode(Enum):
     DISCRIMINATOR = 1
     GENERATOR = 2
 
@@ -16,7 +16,7 @@ class DCGAN(nn.Module):
         self.shape = shape
         self.in_channels = in_channels
         self.out_channels = out_channels
-        self.mode = GAN_MODE.DISCRIMINATOR
+        self.mode = GANMode.DISCRIMINATOR
         self.mode_executions = 0
         self.mode_limit = mode_limit
 
@@ -48,9 +48,9 @@ class DCGAN(nn.Module):
         )
 
     def forward(self, x):
-        if self.mode == GAN_MODE.DISCRIMINATOR:
+        if self.mode == GANMode.DISCRIMINATOR:
             return self.discriminator(x)
-        elif self.mode == GAN_MODE.GENERATOR:
+        elif self.mode == GANMode.GENERATOR:
             return self.generator(x)
         else:
             print("ERROR")
@@ -64,11 +64,11 @@ if __name__ == "__main__":
     x = torch.rand(1, 100, 1, 1).to(DEVICE)
 
     # test generator
-    model.mode = GAN_MODE.GENERATOR
+    model.mode = GANMode.GENERATOR
     x_ = model(x)
     print(x_.shape)
 
     # test discriminator
-    model.mode = GAN_MODE.DISCRIMINATOR
+    model.mode = GANMode.DISCRIMINATOR
     x__ = model(x_)
     print(x__.shape)

@@ -12,19 +12,39 @@ class DCGAN(nn.Module):
     def __init__(self, shape, in_channels, out_channels, mode_limit):
         super(DCGAN, self).__init__()
 
+        # initialise values
         self.shape = shape
         self.in_channels = in_channels
         self.out_channels = out_channels
-
-        self.discriminator = nn.Sequential()
-        self.generator = nn.Sequential()
-
         self.mode = GAN_MODE.DISCRIMINATOR
         self.mode_executions = 0
         self.mode_limit = mode_limit
 
+        # create discriminator and generator
+        self.discriminator = nn.Sequential(
+            nn.ConvTranspose2d(in_channels=100, out_channels=1024, kernel_size=4, stride=1, bias=False),
+            nn.BatchNorm2d(1024),
+            nn.ConvTranspose2d(in_channels=1024, out_channels=512, kernel_size=4, stride=2, padding=1, bias=False),
+            nn.BatchNorm2d(512),
+            nn.ConvTranspose2d(in_channels=512, out_channels=256, kernel_size=4, stride=2, padding=1, bias=False),
+            nn.BatchNorm2d(256),
+            nn.ConvTranspose2d(in_channels=256, out_channels=128, kernel_size=4, stride=2, padding=1, bias=False),
+            nn.BatchNorm2d(128),
+            nn.ConvTranspose2d(in_channels=128, out_channels=3, kernel_size=4, stride=2, padding=1),
+            nn.Sigmoid()
+        )
+
+        self.generator = nn.Sequential(
+
+        )
+
     def forward(self, x):
-        pass
+        if self.mode == GAN_MODE.DISCRIMINATOR:
+            return self.discriminator(x)
+        elif self.mode == GAN_MODE.GENERATOR:
+            pass
+        else:
+            print("ERROR")
 
 
 if __name__ == "__main__":
@@ -32,8 +52,7 @@ if __name__ == "__main__":
     print(DEVICE)
 
     model = DCGAN((64, 64), 3, 1, 10).to(DEVICE)
-    x = torch.rand(1, 3, 64, 64).to(DEVICE)
-    # y = torch.rand(1, 1, 64, 64).to(DEVICE)
-    #print("output shape x = " + str(.shape))
+    x = torch.rand(1, 100, 1, 1).to(DEVICE)
 
-    model(x)
+    x_ = model(x)
+    print(x_.shape)

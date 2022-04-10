@@ -22,6 +22,9 @@ class DCGAN(nn.Module):
 
         # create discriminator and generator
         self.discriminator = nn.Sequential(
+        )
+
+        self.generator = nn.Sequential(
             nn.ConvTranspose2d(in_channels=100, out_channels=1024, kernel_size=4, stride=1, bias=False),
             nn.BatchNorm2d(1024),
             nn.ConvTranspose2d(in_channels=1024, out_channels=512, kernel_size=4, stride=2, padding=1, bias=False),
@@ -34,15 +37,11 @@ class DCGAN(nn.Module):
             nn.Sigmoid()
         )
 
-        self.generator = nn.Sequential(
-
-        )
-
     def forward(self, x):
         if self.mode == GAN_MODE.DISCRIMINATOR:
-            return self.discriminator(x)
-        elif self.mode == GAN_MODE.GENERATOR:
             pass
+        elif self.mode == GAN_MODE.GENERATOR:
+            return self.generator(x)
         else:
             print("ERROR")
 
@@ -54,5 +53,7 @@ if __name__ == "__main__":
     model = DCGAN((64, 64), 3, 1, 10).to(DEVICE)
     x = torch.rand(1, 100, 1, 1).to(DEVICE)
 
+    # test generator
+    model.mode = GAN_MODE.GENERATOR
     x_ = model(x)
     print(x_.shape)

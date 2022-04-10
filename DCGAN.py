@@ -22,6 +22,16 @@ class DCGAN(nn.Module):
 
         # create discriminator and generator
         self.discriminator = nn.Sequential(
+            nn.Conv2d(in_channels=3, out_channels=64, kernel_size=4, stride=2, padding=1, bias=False),
+            nn.BatchNorm2d(64),
+            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=4, stride=2, padding=1, bias=False),
+            nn.BatchNorm2d(128),
+            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=4, stride=2, padding=1, bias=False),
+            nn.BatchNorm2d(256),
+            nn.Conv2d(in_channels=256, out_channels=512, kernel_size=4, stride=2, padding=1),
+            nn.BatchNorm2d(512),
+            nn.Conv2d(in_channels=512, out_channels=1, kernel_size=4),
+            nn.Softmax(dim=1)
         )
 
         self.generator = nn.Sequential(
@@ -39,7 +49,7 @@ class DCGAN(nn.Module):
 
     def forward(self, x):
         if self.mode == GAN_MODE.DISCRIMINATOR:
-            pass
+            return self.discriminator(x)
         elif self.mode == GAN_MODE.GENERATOR:
             return self.generator(x)
         else:
@@ -57,3 +67,8 @@ if __name__ == "__main__":
     model.mode = GAN_MODE.GENERATOR
     x_ = model(x)
     print(x_.shape)
+
+    # test discriminator
+    model.mode = GAN_MODE.DISCRIMINATOR
+    x__ = model(x_)
+    print(x__.shape)
